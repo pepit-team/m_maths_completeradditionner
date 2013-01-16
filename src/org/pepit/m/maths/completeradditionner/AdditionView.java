@@ -66,6 +66,7 @@ public class AdditionView extends View {
 	if (resultSelected
 		&& model.firstOperand() + model.secondOperand() == number) {
 	    resultFound = true;
+	    resultSelected = false;
 	    invalidate();
 	}
     }
@@ -81,6 +82,8 @@ public class AdditionView extends View {
 	card_height = 3 * height / 4;
 
 	symbol_size = card_height / 6;
+	
+	shift_x = width / 2 - 2 * card_width;
     }
 
     private void drawCard(int x, int i, boolean selected, boolean found,
@@ -100,9 +103,15 @@ public class AdditionView extends View {
 	paint.setStyle(Style.FILL_AND_STROKE);
 	paint.setTextSize(60);
 	if (found) {
-	    canvas.drawText("" + i, x, card_height + 60, paint);
+	    float width = paint.measureText("" + i);
+
+	    canvas.drawText("" + i, x + (card_width - width) / 2,
+		    card_height + 60, paint);
 	} else {
-	    canvas.drawText("???", x, card_height + 60, paint);
+	    float width = paint.measureText("???");
+
+	    canvas.drawText("???", x + (card_width - width) / 2,
+		    card_height + 60, paint);
 	}
     }
 
@@ -155,34 +164,33 @@ public class AdditionView extends View {
 
 	Paint paint = new Paint();
 
-	drawCard(10, model.firstOperand(), firstOperandSelected,
+	drawCard(shift_x, model.firstOperand(), firstOperandSelected,
 		firstOperandFound, canvas, paint);
-	drawCard(10 + card_width + card_width / 2, model.secondOperand(),
+	drawCard(shift_x + card_width + card_width / 2, model.secondOperand(),
 		secondOperandSelected, secondOperandFound, canvas, paint);
 	if (resultFound) {
-	    drawCard(10 + 3 * card_width,
+	    drawCard(shift_x + 3 * card_width,
 		    model.firstOperand() + model.secondOperand(),
 		    resultSelected, true, canvas, paint);
 	} else {
-	    drawCard(10 + 3 * card_width, 0, resultSelected, false, canvas,
-		    paint);
+	    drawCard(shift_x + 3 * card_width, 0, resultSelected, false, canvas, paint);
 	}
 
-	drawPlus(10 + card_width + card_width / 4, canvas, paint);
-	drawEqual(10 + 2 * card_width + 3 * card_width / 4, canvas, paint);
+	drawPlus(shift_x + card_width + card_width / 4, canvas, paint);
+	drawEqual(shift_x + 2 * card_width + 3 * card_width / 4, canvas, paint);
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
-	if (onCard(10, event.getX(), event.getY())) {
+	if (onCard(shift_x, event.getX(), event.getY())) {
 	    firstOperandSelected = !firstOperandSelected;
 	    if (firstOperandSelected) {
 		secondOperandSelected = false;
 		resultSelected = false;
 	    }
 	    invalidate();
-	} else if (onCard(10 + card_width + card_width / 2, event.getX(),
+	} else if (onCard(shift_x + card_width + card_width / 2, event.getX(),
 		event.getY())) {
 	    secondOperandSelected = !secondOperandSelected;
 	    if (secondOperandSelected) {
@@ -191,7 +199,7 @@ public class AdditionView extends View {
 	    }
 	    invalidate();
 	} else if (firstOperandFound && secondOperandFound
-		&& onCard(10 + 3 * card_width, event.getX(), event.getY())) {
+		&& onCard(shift_x + 3 * card_width, event.getX(), event.getY())) {
 	    resultSelected = !resultSelected;
 	    if (resultSelected) {
 		firstOperandSelected = false;
@@ -214,6 +222,8 @@ public class AdditionView extends View {
     private int card_height;
 
     private int symbol_size;
+    
+    private int shift_x;
 
     private int resourceIDs[];
 
