@@ -36,6 +36,7 @@ import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -114,7 +115,7 @@ public class AdditionView extends View {
 	}
 	paint.setStrokeWidth(1);
 	paint.setStyle(Style.FILL_AND_STROKE);
-	paint.setTextSize(60);
+	paint.setTextSize(50);
 	if (found) {
 	    float width = paint.measureText("" + i);
 

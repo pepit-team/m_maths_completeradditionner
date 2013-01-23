@@ -26,6 +26,7 @@ package org.pepit.m.maths.completeradditionner;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -64,7 +65,7 @@ public class ExerciseView implements OnClickListener {
 
 	LinearLayout middleLayout = new LinearLayout(ctx);
 	LinearLayout.LayoutParams middleLayoutParams = new LinearLayout.LayoutParams(
-		LinearLayout.LayoutParams.WRAP_CONTENT, 0, 10);
+		LinearLayout.LayoutParams.WRAP_CONTENT, 0, 30);
 
 	additionView = new AdditionView(ctx);
 	additionView.build(plugin, number, max);
@@ -88,11 +89,11 @@ public class ExerciseView implements OnClickListener {
 	b.setText(Integer.toString(i));
 	b.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
 	b.setShadowLayer(5, 2, 2, Color.GRAY);
-	b.setTextSize(30);
+	b.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 30);
 	b.setOnClickListener(this);
 	t.setText(numbers[i]);
 	t.setGravity(Gravity.CENTER_HORIZONTAL);
-	t.setTextSize(30);
+	t.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 30);
 	if (below) {
 	    numberLayout.addView(b);
 	    numberLayout.addView(t);
