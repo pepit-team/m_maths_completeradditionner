@@ -57,8 +57,7 @@ public class Exercise implements org.pepit.plugin.Interface {
 	return info;
     }
 
-    public LinearLayout getExercisePresentationLayout(Context ctx,
-	    File rootResource) {
+    public LinearLayout getExercisePresentationLayout(Context ctx) {
 	LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
 		LinearLayout.LayoutParams.MATCH_PARENT,
 		LinearLayout.LayoutParams.MATCH_PARENT);
@@ -88,7 +87,7 @@ public class Exercise implements org.pepit.plugin.Interface {
     }
 
     public LinearLayout getExplanationPresentationLayout(Context ctx,
-	    File rootResource, int selectedExercise) {
+	    int selectedExercise) {
 	LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
 		LinearLayout.LayoutParams.MATCH_PARENT,
 		LinearLayout.LayoutParams.MATCH_PARENT);
@@ -124,8 +123,8 @@ public class Exercise implements org.pepit.plugin.Interface {
 	return l;
     }
 
-    public LinearLayout getQuestionLayout(Context ctx, File rootResource,
-	    int selectedExercise, int selectedModule, int numQuestion) {
+    public LinearLayout getQuestionLayout(Context ctx, int selectedExercise,
+	    int selectedModule, int numQuestion) {
 	if (numQuestion == 1) {
 	    if (selectedExercise == 0) {
 		view = new ExerciseView(ctx, this, 5, 5);
