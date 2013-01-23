@@ -1,7 +1,7 @@
 /**
  * @file org/pepit/m/maths/completeradditionner/AdditionView.java
  * 
- * PepitModel: an educational software
+ * PepitMobil: an educational software
  * This file is a part of the PepitModel environment
  * http://pepit.be
  *
@@ -23,10 +23,13 @@
 
 package org.pepit.m.maths.completeradditionner;
 
+import java.io.IOException;
+
+import org.pepit.plugin.Utils;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -38,6 +41,7 @@ import android.view.View;
 
 @SuppressLint("DrawAllocation")
 public class AdditionView extends View {
+
     public AdditionView(Context context) {
 	super(context);
 	init(context);
@@ -51,6 +55,10 @@ public class AdditionView extends View {
     public AdditionView(Context context, AttributeSet attrs) {
 	super(context, attrs);
 	init(context);
+    }
+
+    public boolean check() {
+	return resultFound;
     }
 
     public void checkNumber(int number) {
@@ -82,15 +90,20 @@ public class AdditionView extends View {
 	card_height = 3 * height / 4;
 
 	symbol_size = card_height / 6;
-	
+
 	shift_x = width / 2 - 2 * card_width;
     }
 
     private void drawCard(int x, int i, boolean selected, boolean found,
 	    Canvas canvas, Paint paint) {
 	RectF dst = new RectF(x, 10, x + card_width, card_height);
-	Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
-		resourceIDs[i]);
+	Bitmap bitmap = null;
+
+	try {
+	    bitmap = Utils.getImage(plugin, "card_" + i + ".png");
+	} catch (IOException e) {
+	    e.printStackTrace();
+	}
 
 	canvas.drawBitmap(bitmap, null, dst, paint);
 	if (selected) {
@@ -136,48 +149,52 @@ public class AdditionView extends View {
 
     }
 
-    private boolean onCard(int ref, float x, float y) {
-	return x > ref && x < ref + card_width && y > 10 && y < card_height;
-    }
-
     private void init(Context context) {
-	model = new AdditionModel(5, 3);
+	model = null;
 	firstOperandFound = false;
 	secondOperandFound = false;
 	resultFound = false;
 	firstOperandSelected = false;
 	secondOperandSelected = false;
 	resultSelected = false;
-	resourceIDs = new int[13];
-	for (int i = 0; i <= 12; ++i) {
-	    String uri = "drawable/card_" + i;
-	    resourceIDs[i] = getResources().getIdentifier(uri, null,
-		    context.getPackageName());
-	}
+	plugin = null;
+    }
+    
+    public void next() {
+	model.next();
+    }
+
+    private boolean onCard(int ref, float x, float y) {
+	return x > ref && x < ref + card_width && y > 10 && y < card_height;
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
 	super.onDraw(canvas);
 
-	computeDimensions();
+	if (plugin != null) {
+	    computeDimensions();
 
-	Paint paint = new Paint();
+	    Paint paint = new Paint();
 
-	drawCard(shift_x, model.firstOperand(), firstOperandSelected,
-		firstOperandFound, canvas, paint);
-	drawCard(shift_x + card_width + card_width / 2, model.secondOperand(),
-		secondOperandSelected, secondOperandFound, canvas, paint);
-	if (resultFound) {
-	    drawCard(shift_x + 3 * card_width,
-		    model.firstOperand() + model.secondOperand(),
-		    resultSelected, true, canvas, paint);
-	} else {
-	    drawCard(shift_x + 3 * card_width, 0, resultSelected, false, canvas, paint);
+	    drawCard(shift_x, model.firstOperand(), firstOperandSelected,
+		    firstOperandFound, canvas, paint);
+	    drawCard(shift_x + card_width + card_width / 2,
+		    model.secondOperand(), secondOperandSelected,
+		    secondOperandFound, canvas, paint);
+	    if (resultFound) {
+		drawCard(shift_x + 3 * card_width,
+			model.firstOperand() + model.secondOperand(),
+			resultSelected, true, canvas, paint);
+	    } else {
+		drawCard(shift_x + 3 * card_width, 0, resultSelected, false,
+			canvas, paint);
+	    }
+
+	    drawPlus(shift_x + card_width + card_width / 4, canvas, paint);
+	    drawEqual(shift_x + 2 * card_width + 3 * card_width / 4, canvas,
+		    paint);
 	}
-
-	drawPlus(shift_x + card_width + card_width / 4, canvas, paint);
-	drawEqual(shift_x + 2 * card_width + 3 * card_width / 4, canvas, paint);
     }
 
     @Override
@@ -212,6 +229,13 @@ public class AdditionView extends View {
 
     }
 
+    public void build(org.pepit.plugin.Interface plugin, int number, int max) {
+	this.plugin = plugin;
+	model = new AdditionModel(number, max);
+    }
+
+    private org.pepit.plugin.Interface plugin;
+
     private int margin_x;
     private int margin_y;
 
@@ -222,10 +246,8 @@ public class AdditionView extends View {
     private int card_height;
 
     private int symbol_size;
-    
-    private int shift_x;
 
-    private int resourceIDs[];
+    private int shift_x;
 
     private AdditionModel model;
 

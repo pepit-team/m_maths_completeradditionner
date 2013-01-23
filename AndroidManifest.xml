@@ -21,7 +21,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="org.pepit.m.maths.completeradditionner.ExerciseActivity" >
+            android:name="org.pepit.m.maths.completeradditionner.ExerciseView" >
         </activity>
     </application>
 

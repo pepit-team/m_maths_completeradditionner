@@ -1,7 +1,7 @@
 /**
  * @file org/pepit/m/maths/completeradditionner/AdditionModel.java
  * 
- * PepitModel: an educational software
+ * PepitMobil: an educational software
  * This file is a part of the PepitModel environment
  * http://pepit.be
  *
@@ -32,17 +32,27 @@ public class AdditionModel {
 	
 	firstOperands = new int[number];
 	secondOperands = new int[number];
-	for (int i = 0; i < number; ++i) {
+	
+	int i =0;
+	
+	do {
 	    firstOperands[i] = r.nextInt(max) + 1;
 	    secondOperands[i] = r.nextInt(max) + 1;
-	}
+	    if (firstOperands[i] + secondOperands[i] <= max) {
+		++i;
+	    }
+	} while (i < number);
 	index = 0;
     }
     
     public int firstOperand() {
 	return firstOperands[index];
     }
-
+    
+    public void next() {
+	++index;
+    }
+    
     public int secondOperand() {
 	return secondOperands[index];
     }

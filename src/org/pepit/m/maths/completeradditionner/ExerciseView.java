@@ -1,7 +1,7 @@
 /**
  * @file org/pepit/m/maths/completeradditionner/ExerciseActivity.java
  * 
- * PepitModel: an educational software
+ * PepitMobil: an educational software
  * This file is a part of the PepitModel environment
  * http://pepit.be
  *
@@ -23,11 +23,9 @@
 
 package org.pepit.m.maths.completeradditionner;
 
-import android.os.Bundle;
 import android.annotation.SuppressLint;
-import android.app.Activity;
+import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -35,20 +33,16 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class ExerciseActivity extends Activity implements OnClickListener {
+public class ExerciseView implements OnClickListener {
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-	super.onCreate(savedInstanceState);
+    public ExerciseView(Context ctx, org.pepit.plugin.Interface plugin,
+	    int number, int max) {
+	context = ctx;
 
-	LinearLayout rootLayout = new LinearLayout(this);
-	LinearLayout.LayoutParams rootLayoutParams = new LinearLayout.LayoutParams(
-		LinearLayout.LayoutParams.MATCH_PARENT,
-		LinearLayout.LayoutParams.MATCH_PARENT);
-
+	rootLayout = new LinearLayout(ctx);
 	rootLayout.setOrientation(LinearLayout.VERTICAL);
 
-	LinearLayout topLayout = new LinearLayout(this);
+	LinearLayout topLayout = new LinearLayout(ctx);
 	LinearLayout.LayoutParams topLayoutParams = new LinearLayout.LayoutParams(
 		LinearLayout.LayoutParams.MATCH_PARENT,
 		LinearLayout.LayoutParams.WRAP_CONTENT, 1);
@@ -58,7 +52,7 @@ public class ExerciseActivity extends Activity implements OnClickListener {
 	    buildNumberLayout(i + 1, topLayout, true);
 	}
 
-	LinearLayout bottomLayout = new LinearLayout(this);
+	LinearLayout bottomLayout = new LinearLayout(ctx);
 	LinearLayout.LayoutParams bottomLayoutParams = new LinearLayout.LayoutParams(
 		LinearLayout.LayoutParams.MATCH_PARENT,
 		LinearLayout.LayoutParams.WRAP_CONTENT, 1);
@@ -68,25 +62,24 @@ public class ExerciseActivity extends Activity implements OnClickListener {
 	    buildNumberLayout(i + 7, bottomLayout, false);
 	}
 
-	LinearLayout middleLayout = new LinearLayout(this);
+	LinearLayout middleLayout = new LinearLayout(ctx);
 	LinearLayout.LayoutParams middleLayoutParams = new LinearLayout.LayoutParams(
 		LinearLayout.LayoutParams.WRAP_CONTENT, 0, 10);
-	
-	additionView = new AdditionView(this);
+
+	additionView = new AdditionView(ctx);
+	additionView.build(plugin, number, max);
 	middleLayout.addView(additionView);
 
 	rootLayout.addView(topLayout, topLayoutParams);
 	rootLayout.addView(middleLayout, middleLayoutParams);
 	rootLayout.addView(bottomLayout, bottomLayoutParams);
-
-	setContentView(rootLayout, rootLayoutParams);
     }
 
     @SuppressLint("UseValueOf")
     private void buildNumberLayout(int i, LinearLayout layout, boolean below) {
-	TextView t = new TextView(this);
-	Button b = new Button(this);
-	LinearLayout numberLayout = new LinearLayout(this);
+	TextView t = new TextView(context);
+	Button b = new Button(context);
+	LinearLayout numberLayout = new LinearLayout(context);
 	LinearLayout.LayoutParams numberLayoutParams = new LinearLayout.LayoutParams(
 		LinearLayout.LayoutParams.MATCH_PARENT,
 		LinearLayout.LayoutParams.WRAP_CONTENT, 1);
@@ -110,16 +103,31 @@ public class ExerciseActivity extends Activity implements OnClickListener {
 	layout.addView(numberLayout, numberLayoutParams);
     }
 
+    public boolean check() {
+	return additionView.check();
+    }
+
+    public LinearLayout getLayout() {
+	return rootLayout;
+    }
+
+    public void next() {
+	additionView.next();
+    }
+
     private static String[] numbers = { "Zero", "Un", "Deux", "Trois",
 	    "Quatre", "Cinq", "Six", "Sept", "Huit", "Neuf", "Dix", "Onze",
 	    "Douze" };
 
-    @Override
     public void onClick(View view) {
-	String number = ((Button)view).getText().toString();
-	
+	String number = ((Button) view).getText().toString();
+
 	additionView.checkNumber(Integer.valueOf(number));
     }
-    
+
+    private Context context;
+
+    private LinearLayout rootLayout;
+
     private AdditionView additionView;
 }
