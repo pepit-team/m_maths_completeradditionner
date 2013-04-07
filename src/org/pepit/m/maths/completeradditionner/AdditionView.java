@@ -25,7 +25,7 @@ package org.pepit.m.maths.completeradditionner;
 
 import java.io.IOException;
 
-import org.pepit.plugin.Utils;
+import org.pepit.plugin.PluginFile;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -100,7 +100,7 @@ public class AdditionView extends View {
 	Bitmap bitmap = null;
 
 	try {
-	    bitmap = Utils.getImage(plugin, "card_" + i + ".png");
+	    bitmap = PluginFile.getImage(plugin, "card_" + i + ".png");
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}
